@@ -9,9 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import simonellifabio.GestioneDispositivi.entities.Device;
 import simonellifabio.GestioneDispositivi.entities.User;
-import simonellifabio.GestioneDispositivi.entities.payloads.NewDeviceDTO;
-import simonellifabio.GestioneDispositivi.entities.payloads.NewUserDTO;
-import simonellifabio.GestioneDispositivi.entities.payloads.NewUserResponseDTO;
+import simonellifabio.GestioneDispositivi.entities.payloads.*;
 import simonellifabio.GestioneDispositivi.services.DevicesService;
 
 import java.util.UUID;
@@ -31,13 +29,18 @@ public class DevicesController {
     }
 
     @GetMapping("/{deviceId}")
-    public Device getDeviceById(@PathVariable UUID deviceId) {
-        return devicesService.findById(deviceId);
+    public NewDeviceGetResponseDTO getDeviceById(@PathVariable UUID deviceId) {
+        Device device = devicesService.findById(deviceId);
+        return new NewDeviceGetResponseDTO(
+                device.getId(),
+                device.getType(),
+                device.getUser().getId()
+        );
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public NewUserResponseDTO createDevice(@RequestBody @Validated NewDeviceDTO newDevicePayload, BindingResult validation) {
+    public NewDeviceResponseDTO createDevice(@RequestBody @Validated NewDeviceDTO newDevicePayload, BindingResult validation) {
         System.out.println(validation);
         if (validation.hasErrors()) {
             System.out.println(validation.getAllErrors());
@@ -48,13 +51,15 @@ public class DevicesController {
             }
         } else {
             Device newDevice = devicesService.save(newDevicePayload);
-            return new NewUserResponseDTO(newDevice.getId());
+            return new NewDeviceResponseDTO(newDevice.getId());
         }
     }
 
     @PutMapping("/{deviceId}")
-    public Device getDeviceByIdAndUpdate(@PathVariable UUID deviceId, @RequestBody NewDeviceDTO modifiedDevicePayload) {
-        return devicesService.findByIdAndUpdate(deviceId, modifiedDevicePayload);
+    public NewDeviceResponseDTO getDeviceByIdAndUpdate(@PathVariable UUID deviceId, @RequestBody NewDeviceDTO modifiedDevicePayload) {
+        Device device = devicesService.findByIdAndUpdate(deviceId, modifiedDevicePayload);
+        NewDeviceResponseDTO newDeviceResponseDTO = new NewDeviceResponseDTO(device.getId());
+        return newDeviceResponseDTO;
     }
 
     @DeleteMapping("/{deviceId}")

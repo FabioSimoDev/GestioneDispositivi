@@ -53,8 +53,9 @@ public class UsersController {
     }
 
     @PutMapping("/{userId}")
-    public User getUserByIdAndUpdate(@PathVariable UUID userId, @RequestBody User modifiedUserPayload) {
-        return usersService.findByIdAndUpdate(userId, modifiedUserPayload);
+    public NewUserResponseDTO getUserByIdAndUpdate(@PathVariable UUID userId, @RequestBody NewUserDTO modifiedUserPayload) {
+        User user = usersService.findByIdAndUpdate(userId, modifiedUserPayload);
+        return new NewUserResponseDTO(user.getId());
     }
 
     @DeleteMapping("/{userId}")

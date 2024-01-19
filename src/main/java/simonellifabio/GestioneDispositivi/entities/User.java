@@ -1,5 +1,6 @@
 package simonellifabio.GestioneDispositivi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -26,5 +27,6 @@ public class User {
     private String surname;
     private String email;
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Device> devices;
 }

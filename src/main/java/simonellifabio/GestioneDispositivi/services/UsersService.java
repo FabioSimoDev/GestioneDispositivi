@@ -56,12 +56,12 @@ public class UsersService {
     }
 
     @Transactional
-    public User findByIdAndUpdate(UUID id, User body) {
+    public User findByIdAndUpdate(UUID id, NewUserDTO body) {
         User found = this.findById(id);
-        found.setSurname(body.getSurname());
-        found.setName(body.getName());
-        found.setEmail(body.getEmail());
-        found.setUsername(body.getUsername());
+        found.setSurname(body.surname());
+        found.setName(body.name());
+        found.setEmail(body.email());
+        found.setUsername(body.username());
         return usersDAO.save(found);
     }
 

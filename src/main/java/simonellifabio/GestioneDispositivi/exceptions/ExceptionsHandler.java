@@ -26,6 +26,7 @@ public class ExceptionsHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorsDTO handleGenericError(Exception ex){
+        ex.printStackTrace();
         return new ErrorsDTO(ex.getMessage(), LocalDateTime.now());
     }
 }
