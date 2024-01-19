@@ -7,7 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import simonellifabio.GestioneDispositivi.entities.Device;
 import simonellifabio.GestioneDispositivi.entities.User;
+import simonellifabio.GestioneDispositivi.entities.payloads.NewDeviceDTO;
+import simonellifabio.GestioneDispositivi.entities.payloads.NewDeviceResponseDTO;
 import simonellifabio.GestioneDispositivi.entities.payloads.NewUserDTO;
 import simonellifabio.GestioneDispositivi.entities.payloads.NewUserResponseDTO;
 import simonellifabio.GestioneDispositivi.services.UsersService;
@@ -58,5 +61,12 @@ public class UsersController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void getUserByIdAndDelete(@PathVariable UUID userId) {
         usersService.findByIdAndDelete(userId);
+    }
+
+    @PostMapping("/{userId}/devices")
+    public NewDeviceResponseDTO addDeviceToUser(@PathVariable UUID userId, @RequestBody NewDeviceDTO newDeviceDTO) {
+        Device device = usersService.addDeviceToUser(userId, newDeviceDTO);
+        NewDeviceResponseDTO responseDTO = new NewDeviceResponseDTO(device.getId());
+        return responseDTO;
     }
 }

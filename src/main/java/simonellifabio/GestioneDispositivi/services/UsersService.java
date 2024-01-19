@@ -51,6 +51,7 @@ public class UsersService {
         newUser.setSurname(body.surname());
         newUser.setName(body.name());
         newUser.setEmail(body.email());
+        newUser.setUsername(body.username());
         return usersDAO.save(newUser);
     }
 
@@ -60,6 +61,7 @@ public class UsersService {
         found.setSurname(body.getSurname());
         found.setName(body.getName());
         found.setEmail(body.getEmail());
+        found.setUsername(body.getUsername());
         return usersDAO.save(found);
     }
 

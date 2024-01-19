@@ -1,6 +1,8 @@
 package simonellifabio.GestioneDispositivi.entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +18,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Device {
+    @Id
+    @GeneratedValue
     private UUID id;
     private DeviceType type;
 
