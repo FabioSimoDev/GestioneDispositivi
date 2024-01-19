@@ -40,9 +40,9 @@ public class UsersController {
     public NewUserResponseDTO createUser(@RequestBody @Validated NewUserDTO newUserPayload, BindingResult validation) {
         System.out.println(validation);
         if (validation.hasErrors()) {
-            System.out.println(validation.getAllErrors());
+            validation.getAllErrors().get(0).getDefaultMessage();
             try {
-                throw new BadRequestException("Ci sono errori nel payload!");
+                throw new BadRequestException(validation.getAllErrors().get(0).getDefaultMessage());
             } catch (BadRequestException e) {
                 throw new RuntimeException(e);
             }
@@ -66,7 +66,6 @@ public class UsersController {
     @PostMapping("/{userId}/devices")
     public NewDeviceResponseDTO addDeviceToUser(@PathVariable UUID userId, @RequestBody NewDeviceDTO newDeviceDTO) {
         Device device = usersService.addDeviceToUser(userId, newDeviceDTO);
-        NewDeviceResponseDTO responseDTO = new NewDeviceResponseDTO(device.getId());
-        return responseDTO;
+        return new NewDeviceResponseDTO(device.getId());
     }
 }

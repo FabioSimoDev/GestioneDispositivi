@@ -1,7 +1,14 @@
 package simonellifabio.GestioneDispositivi.entities.payloads;
 
-public record NewUserDTO(String email,
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+
+public record NewUserDTO(@Email(message = "Email non valida")
+                         @NotNull(message = "L'email non può essere null") String email,
+                         @NotNull(message = "Il nome non può essere null")
                          String name,
+                         @NotNull(message = "Il cognome non può essere null")
                          String surname,
+                         @NotNull(message = "L'username non può essere null")
                          String username) {
 }
