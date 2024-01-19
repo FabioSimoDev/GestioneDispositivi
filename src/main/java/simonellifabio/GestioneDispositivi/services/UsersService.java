@@ -1,5 +1,7 @@
 package simonellifabio.GestioneDispositivi.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,15 +10,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import simonellifabio.GestioneDispositivi.entities.Device;
 import simonellifabio.GestioneDispositivi.entities.User;
 import simonellifabio.GestioneDispositivi.entities.enums.DeviceType;
+import simonellifabio.GestioneDispositivi.entities.payloads.NewAvatarResponseDTO;
 import simonellifabio.GestioneDispositivi.entities.payloads.NewDeviceDTO;
 import simonellifabio.GestioneDispositivi.entities.payloads.NewUserDTO;
 import simonellifabio.GestioneDispositivi.exceptions.ItemNotFoundException;
 import simonellifabio.GestioneDispositivi.repositories.DevicesDAO;
 import simonellifabio.GestioneDispositivi.repositories.UsersDAO;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @Service
@@ -25,6 +30,9 @@ public class UsersService {
     private UsersDAO usersDAO;
     @Autowired
     private DevicesDAO devicesDAO;
+
+    @Autowired
+    private Cloudinary cloudinaryUploader;
 
     public Page<User> getUsers(int page, int size, String orderBy){
         if(size >= 50) size = 50;
@@ -83,5 +91,19 @@ public class UsersService {
         device.setUser(user);
 
         return devicesDAO.save(device);
+    }
+
+    public User uploadPicture(MultipartFile file, UUID userId) throws IOException {
+
+        User user = this.findById(userId);
+
+        String url = (String) cloudinaryUploader.uploader()
+                .upload(file.getBytes(), ObjectUtils.emptyMap())
+                .get("url");
+
+        //metto l'url nell'utente e lo aggiorno nel DB
+        user.setAvatarURL(url);
+        usersDAO.save(user);
+        return user;
     }
 }

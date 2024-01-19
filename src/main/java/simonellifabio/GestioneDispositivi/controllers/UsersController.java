@@ -7,14 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import simonellifabio.GestioneDispositivi.entities.Device;
 import simonellifabio.GestioneDispositivi.entities.User;
-import simonellifabio.GestioneDispositivi.entities.payloads.NewDeviceDTO;
-import simonellifabio.GestioneDispositivi.entities.payloads.NewDeviceResponseDTO;
-import simonellifabio.GestioneDispositivi.entities.payloads.NewUserDTO;
-import simonellifabio.GestioneDispositivi.entities.payloads.NewUserResponseDTO;
+import simonellifabio.GestioneDispositivi.entities.payloads.*;
 import simonellifabio.GestioneDispositivi.services.UsersService;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @RestController
@@ -68,5 +67,10 @@ public class UsersController {
     public NewDeviceResponseDTO addDeviceToUser(@PathVariable UUID userId, @RequestBody NewDeviceDTO newDeviceDTO) {
         Device device = usersService.addDeviceToUser(userId, newDeviceDTO);
         return new NewDeviceResponseDTO(device.getId());
+    }
+
+    @PostMapping("/{userId}/upload")
+    public User uploadAvatar(@RequestParam("avatar") MultipartFile file, @PathVariable UUID userId) throws IOException {
+        return usersService.uploadPicture(file, userId);
     }
 }

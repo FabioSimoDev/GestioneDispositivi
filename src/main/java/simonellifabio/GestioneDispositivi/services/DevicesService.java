@@ -7,17 +7,23 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import simonellifabio.GestioneDispositivi.entities.Device;
+import simonellifabio.GestioneDispositivi.entities.User;
 import simonellifabio.GestioneDispositivi.entities.enums.DeviceType;
 import simonellifabio.GestioneDispositivi.entities.payloads.NewDeviceDTO;
 import simonellifabio.GestioneDispositivi.exceptions.ItemNotFoundException;
 import simonellifabio.GestioneDispositivi.repositories.DevicesDAO;
+import simonellifabio.GestioneDispositivi.repositories.UsersDAO;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class DevicesService {
     @Autowired
     private DevicesDAO devicesDAO;
+
+    @Autowired
+    private UsersService usersService;
 
     public Page<Device> getDevices(int page, int size, String orderBy) {
         if (size >= 50) size = 50;
@@ -44,5 +50,14 @@ public class DevicesService {
         Device found = this.findById(id);
         found.setType(DeviceType.valueOf(body.type()));
         return devicesDAO.save(found);
+    }
+
+    public List<Device> findByUser(UUID userId){
+        User user = usersService.findById(userId);
+        return devicesDAO.findByUser(user);
+    }
+
+    public List<Device> findByType(DeviceType type){
+        return devicesDAO.findByType(type);
     }
 }

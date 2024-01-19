@@ -9,9 +9,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import simonellifabio.GestioneDispositivi.entities.Device;
 import simonellifabio.GestioneDispositivi.entities.User;
+import simonellifabio.GestioneDispositivi.entities.enums.DeviceType;
 import simonellifabio.GestioneDispositivi.entities.payloads.*;
 import simonellifabio.GestioneDispositivi.services.DevicesService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -38,6 +41,24 @@ public class DevicesController {
         );
     }
 
+    @GetMapping("/user/{userId}")
+    public List<Device> getByUser(@PathVariable UUID userId){
+        return devicesService.findByUser(userId);
+    }
+
+    @GetMapping("/")
+    public List<NewDeviceGetResponseDTO> getByType(@RequestParam(name = "type", required = false) String type){
+        //mettere controllo per vedere se il type è valido
+        DeviceType deviceType = DeviceType.valueOf(type);
+        List<Device> devices = devicesService.findByType(deviceType);
+        List<NewDeviceGetResponseDTO> newDeviceGetResponseDTOList = new ArrayList<>();
+        devices.forEach(device -> {
+            NewDeviceGetResponseDTO newDeviceGetResponseDTO = new NewDeviceGetResponseDTO(device.getId(), device.getType(), device.getUser().getId());
+            newDeviceGetResponseDTOList.add(newDeviceGetResponseDTO);
+        });
+        return newDeviceGetResponseDTOList;
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public NewDeviceResponseDTO createDevice(@RequestBody @Validated NewDeviceDTO newDevicePayload, BindingResult validation) {
@@ -58,8 +79,7 @@ public class DevicesController {
     @PutMapping("/{deviceId}")
     public NewDeviceResponseDTO getDeviceByIdAndUpdate(@PathVariable UUID deviceId, @RequestBody NewDeviceDTO modifiedDevicePayload) {
         Device device = devicesService.findByIdAndUpdate(deviceId, modifiedDevicePayload);
-        NewDeviceResponseDTO newDeviceResponseDTO = new NewDeviceResponseDTO(device.getId());
-        return newDeviceResponseDTO;
+        return new NewDeviceResponseDTO(device.getId());
     }
 
     @DeleteMapping("/{deviceId}")

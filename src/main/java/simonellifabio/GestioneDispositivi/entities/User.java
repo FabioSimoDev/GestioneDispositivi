@@ -26,6 +26,7 @@ public class User {
     private String name;
     private String surname;
     private String email;
+    private String avatarURL;
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Device> devices;
