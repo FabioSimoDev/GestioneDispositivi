@@ -22,6 +22,8 @@ import simonellifabio.GestioneDispositivi.repositories.DevicesDAO;
 import simonellifabio.GestioneDispositivi.repositories.UsersDAO;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -105,5 +107,13 @@ public class UsersService {
         user.setAvatarURL(url);
         usersDAO.save(user);
         return user;
+    }
+
+    public User findByDevice(UUID id){
+        Optional<Device> found = devicesDAO.findById(id);
+        Device device = new Device();
+        if(found.isPresent()) device = found.get();
+        else throw new ItemNotFoundException(id);
+        return usersDAO.findByDevices(device);
     }
 }

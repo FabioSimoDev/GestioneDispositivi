@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import simonellifabio.GestioneDispositivi.entities.Device;
 import simonellifabio.GestioneDispositivi.entities.User;
 import simonellifabio.GestioneDispositivi.entities.enums.DeviceType;
@@ -15,6 +16,7 @@ import simonellifabio.GestioneDispositivi.repositories.DevicesDAO;
 import simonellifabio.GestioneDispositivi.repositories.UsersDAO;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,9 +33,12 @@ public class DevicesService {
         return devicesDAO.findAll(pageable);
     }
 
+    @Transactional
     public Device save(NewDeviceDTO body){
         Device newDevice = new Device();
+        User user = usersService.findById(body.userId());
         newDevice.setType(DeviceType.valueOf(body.type()));
+        newDevice.setId(body.userId());
         return devicesDAO.save(newDevice);
     }
 

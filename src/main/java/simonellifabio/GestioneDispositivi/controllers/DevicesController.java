@@ -37,7 +37,7 @@ public class DevicesController {
         return new NewDeviceGetResponseDTO(
                 device.getId(),
                 device.getType(),
-                device.getUser().getId()
+                device.getId()
         );
     }
 
@@ -66,7 +66,7 @@ public class DevicesController {
         if (validation.hasErrors()) {
             System.out.println(validation.getAllErrors());
             try {
-                throw new BadRequestException("Ci sono errori nel payload!");
+                throw new BadRequestException(validation.getAllErrors().get(0).getDefaultMessage());
             } catch (BadRequestException e) {
                 throw new RuntimeException(e);
             }

@@ -13,5 +13,5 @@ import java.util.UUID;
 public interface UsersDAO extends JpaRepository<User, UUID> {
     public Optional<User> findByEmail(String email);
 
-    public List<User> findByDevices(Device device);
+    public User findByDevices(Device device);
 }

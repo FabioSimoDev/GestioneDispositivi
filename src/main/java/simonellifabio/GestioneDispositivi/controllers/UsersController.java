@@ -14,6 +14,7 @@ import simonellifabio.GestioneDispositivi.entities.payloads.*;
 import simonellifabio.GestioneDispositivi.services.UsersService;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -32,6 +33,11 @@ public class UsersController {
     @GetMapping("/{userId}")
     public User getUserById(@PathVariable UUID userId) {
         return usersService.findById(userId);
+    }
+
+    @GetMapping("/device/{deviceId}")
+    public User getUserByDevice(@PathVariable UUID deviceId){
+        return usersService.findByDevice(deviceId);
     }
 
     @PostMapping
